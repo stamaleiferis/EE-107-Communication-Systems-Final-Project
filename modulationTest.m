@@ -79,7 +79,7 @@ ylabel('Channel output')
 title('Channel output for modulated signal with Half Sine Wave')
 
 out_PS_SRRC = getChannel(ch_coeff,fs, SRRC_mod);  %SRRC modulated signal after passing through channel
-t_out2 = linspace(0,(length(b)+4)*T,length(out_PS_SRRC));
+t_out2 = linspace(-K*T,(length(b)+length(ch_coeff)*T+K*T),length(out_PS_SRRC));
 subplot(2,1,2)
 plot(t_out2, out_PS_SRRC);
 xlabel('Time')
