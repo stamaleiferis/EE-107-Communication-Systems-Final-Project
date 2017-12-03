@@ -1,8 +1,8 @@
 clear all, close all
 alpha = 0.5;    % roll-off factor
-b = round(rand(20,1));  %random bitStream
+b = round(rand(10,1));  %random bitStream
 % b = [0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1];
-K = 2;  %truncation constant
+K = 4;  %truncation constant
 fs = 32;    %samples per bit duration
 T = 1;      %bit duratio 
 %% Q1: Plot pulse shaping functions and their frequency responses
@@ -28,7 +28,7 @@ figure
 freqz(pulse_SRRC);  % plot SRRC Pulse Frequency Response
 title('SRRC Frequency Response')
 
-%% Q2: Plot the modulated signals
+%% Q3: Plot the modulated signals
 figure
 [HS_mod, t1] = bitStreamModulationHS(b,T,fs); % Modulate signal with Half Sine pulses
 subplot(2,1,1)
@@ -39,7 +39,7 @@ subplot(2,1,2)
 plot(t2, SRRC_mod)
 title('SRRC Modulated Signal')
 
-%% Q3 Plot spectrum of modulated signals 
+%% Q2 Plot spectrum of modulated signals 
 figure
 freqz(HS_mod)
 title('Frequency Response of Half Sine Modulated Signal')
@@ -54,7 +54,7 @@ eyediagram(HS_mod, fs-1, T, fs/2)
 title('Eye diagram for half sine modulated signal')
 
 %eye diagram for SRRC modulated signal
-eyediagram(SRRC_mod(2*(K-1)*fs:end-2*(K-1)*fs),(K-1)*fs, T, 0)
+eyediagram(SRRC_mod(2*(K-1)*T*fs:end-2*(K-1)*T*fs), fs, T, 0)
 title('Eye diagram for SRRC modulated signal')
 %% Q5 Channel impulse and frequency response
 ch_coeff = [1 1/2 3/4 -2/7];    % channel coefficients, first sample is the ideal channel, rest are echoes
@@ -89,8 +89,8 @@ title('Channel output for modulated signal with SRRC')
 
 eyediagram(out_PS_HS,fs-1,T,fs/2+1)
 title('Eye diagram for HS channel output')
-
-eyediagram(out_PS_SRRC(2*(K-1)*fs:end-2*(K-1)*fs),(K-1)*fs,T,0)
+%%
+eyediagram(out_PS_SRRC((K-0.5)*T*fs:end-(K-0.5)*T*fs), fs, T, fs/2+2)
 title('Eye diagram for SRRC channel output')
 %% Q7: Noise
 
@@ -110,7 +110,7 @@ title('SRRC Channel Output with Noise')
 %plot eye diagrams
 eyediagram(out_PS_HS_withNoise,fs-1,T,fs/2+1)
 title('Eye diagram for HS channel output with noise')
-eyediagram(out_PS_SRRC_withNoise(2*(K-1)*fs:end-2*(K-1)*fs),(K-1)*fs,T,0)
+eyediagram(out_PS_SRRC_withNoise((K-0.5)*T*fs:end-(K-0.5)*T*fs), fs, T, fs/2+2)
 title('Eye diagram for SRRC channel output with noise')
 
 
@@ -144,5 +144,5 @@ eyediagram(HS_MF_out,fs-1,T,1)
 title('Eye diagram for HS matched filter output')
 
 SRRC_MF_out = conv(out_PS_SRRC,SRRC_MF); 
-eyediagram(SRRC_MF_out(2*(K-1)*fs:end-2*(K-1)*fs),(K-1)*fs,T,0)
+eyediagram(SRRC_MF_out((2*K-1)*fs*T:end-T*(2*K-1)*fs),fs-1,T,0)
 title('Eye diagram for SRRC matched filter output')

@@ -5,7 +5,7 @@ numTaps = length(ch_coeff);
 channel = [];
 output = 0;
 for i = 1:numTaps-1
-    channel = [channel ch_coeff(i) zero];  
+    channel = [channel ch_coeff(i) zero];
 end
 
 channel = [channel ch_coeff(end)];
