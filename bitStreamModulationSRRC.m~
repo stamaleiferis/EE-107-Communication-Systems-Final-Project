@@ -1,0 +1,27 @@
+function [y, t] = bitStreamModulationSRRC(b,T,fs,K,alpha)
+
+	b(b==0) = -1;					%	convert 0's to -1's
+	pulse = SRRC(alpha, T, K, fs);		%	get pulse shape
+	spacing = zeros(1, (T*fs)-1);
+
+% 	dataToConvolve = [];
+% 	for i=1:length(b)-1
+% 		dataToConvolve = [dataToConvolve b(i) spacing];
+%     end
+%     dataToConvolve = [dataToConvolve b(end)];
+% 	y = conv(dataToConvolve,pulse);
+%     
+%     
+    y = zeros(1, (length(b)-1+2*K)*T*fs);
+    j = 1;
+    for i = 1:length(b)
+        y(j:j+length(pulse)-1) = y(j:j+length(pulse)-1) + b(i)*pulse;
+        j = j +length(pulse);
+    end
+    
+
+    if nargout == 2
+        t = linspace(-K*T,(length(b)-1+K)*T, ((length(b)-1)*T+2*K*T)*fs);
+    end
+
+end

@@ -1,6 +1,6 @@
 function [g2, t2] = SRRC(alpha, T, K, fs)
 
-	t = linspace(-K*T,K*T,2*K*fs);
+	t = linspace(-K*T,K*T-T/fs,2*K*fs);
 
 	for i=1:length(t)
 
