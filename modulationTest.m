@@ -140,7 +140,9 @@ title('SRRC Matched Filter Frequency Response')
 
 %convolve modulated signals with their respective matched filter
 HS_MF_out = conv(out_PS_HS,HS_MF); 
-eyediagram(HS_MF_out,fs,T,0)
+eyediagram(HS_MF_out,fs-1,T,1)
+title('Eye diagram for HS matched filter output')
 
 SRRC_MF_out = conv(out_PS_SRRC,SRRC_MF); 
 eyediagram(SRRC_MF_out(2*(K-1)*fs:end-2*(K-1)*fs),(K-1)*fs,T,0)
+title('Eye diagram for SRRC matched filter output')
