@@ -1,7 +1,7 @@
 clear all, close all
 alpha = 2;    % roll-off factor
 b = round(rand(20,1));  %random bitStream
-b = [0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1];
+% b = [0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1];
 K = 2;  %truncation constant
 fs = 32;    %samples per bit duration
 T = 1;      %bit duratio 
@@ -140,7 +140,7 @@ title('SRRC Matched Filter Frequency Response')
 
 %convolve modulated signals with their respective matched filter
 HS_MF_out = conv(out_PS_HS,HS_MF); 
-eyediagram(HS_MF_out,fs,T,fs/2)
+eyediagram(HS_MF_out,fs,T,0)
 
 SRRC_MF_out = conv(out_PS_SRRC,SRRC_MF); 
-
+eyediagram(SRRC_MF_out(2*(K-1)*fs:end-2*(K-1)*fs),(K-1)*fs,T,0)
