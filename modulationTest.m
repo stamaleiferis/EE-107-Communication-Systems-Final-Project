@@ -39,7 +39,12 @@ plot(t2, SRRC_mod)
 title('SRRC Modulated Signal')
 
 %% Q3 Plot spectrum of modulated signals 
-
+figure
+freqz(HS_mod)
+title('Frequency Response of Half Sine Modulated Signal')
+figure
+freqz(SRRC_mod)
+title('Frequency Response of SRRC Modulated Signal')
 
 %% Q4: Plot eye diagram for modulated signals
 

@@ -1,34 +1,49 @@
 clear all, close all
-alpha = 0;    % roll-off factor
-b = round(rand(100,1));  %random bitStream
+alpha = 2;    % roll-off factor
+b = round(rand(20,1));  %random bitStream
 K = 2;  %truncation constant
 fs = 32;    %samples per bit duration
 T = 1;      %bit duratio 
 %% Q1: Plot pulse shaping functions and their frequency responses
 [pulse_HS, t1] = halfSineWave(T,fs);  %get half sine pulse and time vector
-[g2, t2] = SRRC(alpha, T, K, fs);   %get
+[pulse_SRRC, t2] = SRRC(alpha, T, K, fs);   %get SRRC pulse and time vector
 
 figure
-subplot(t1, pulse_HS)
+plot(t1, pulse_HS)      % plot Half Sine Pulse
 title('Half Sine Wave vs Time')
 xlabel('time(s)')
-ylabel('Half Sine Wave')
+ylabel('Half Sine Wave')          
+figure
+plot(t2,pulse_SRRC);    % plot SRRC pulse
+ttl = sprintf('SRRC vs Time K=%d', K);
+title(ttl)
+xlabel('time(s)')
+ylabel('SRRC')
+
+figure
+freqz(pulse_HS);    % plot Half Sine Pulse Frequency Response
+title('Half Sine Wave Frequency Response')
+figure
+freqz(pulse_SRRC);  % plot SRRC Pulse Frequency Response
+title('SRRC Frequency Response')
 
 %% Q2: Plot the modulated signals
 figure
-HS_mod = bitStreamModulationHS(b,T,fs); % Half sine modulated signal
-t1 = linspace(0,length(b)*T,length(HS_mod));    % time vector for HS signal
+[HS_mod, t1] = bitStreamModulationHS(b,T,fs); % Modulate signal with Half Sine pulses
 subplot(2,1,1)
-plot(t1, HS_mod)
+plot(t1, HS_mod)    % Plot Half Sine modulated signal
 title('Half Sine Modulated Signal')
-SRRC_mod = bitStreamModulationSRRC(b,T,fs,K,alpha); % SRRC modulated signal
-t2 = linspace(0,length(b)*(2*K)*T,length(SRRC_mod));% time vector for SRRC signal
+[SRRC_mod,t2] = bitStreamModulationSRRC(b,T,fs,K,alpha); % SRRC modulated signal
 subplot(2,1,2)
 plot(t2, SRRC_mod)
 title('SRRC Modulated Signal')
 
 %% Q3 Plot spectrum of modulated signals 
-
+figure
+freqz(HS_mod)
+title()
+figure
+freqz(SRRC_mod)
 
 %% Q4: Plot eye diagram for modulated signals
 
@@ -37,7 +52,7 @@ eyediagram(HS_mod, fs-1, T, fs/2)
 title('Eye diagram for half sine modulated signal')
 
 %eye diagram for SRRC modulated signal
-eyediagram(SRRC_mod,(K-1)*fs, T, (K-1)*fs/2)
+eyediagram(SRRC_mod,(K-1)*fs, T, 0)
 title('Eye diagram for SRRC modulated signal')
 %% Q5 Channel impulse and frequency response
 ch_coeff = [1 1/2 3/4 -2/7];    % channel coefficients, first sample is the ideal channel, rest are echoes
@@ -73,7 +88,7 @@ title('Channel output for modulated signal with SRRC')
 eyediagram(out_PS_HS,fs-1,T,fs/2+1)
 title('Eye diagram for HS channel output')
 
-eyediagram(out_PS_SRRC,(K-1)*fs,T,(K-1)*fs/2)
+eyediagram(out_PS_SRRC,(K-1)*fs,T,0)
 title('Eye diagram for SRRC channel output')
 %% Q7: Noise
 
