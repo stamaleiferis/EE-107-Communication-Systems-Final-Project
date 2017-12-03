@@ -89,7 +89,7 @@ title('Channel output for modulated signal with SRRC')
 eyediagram(out_PS_HS,fs-1,T,fs/2+1)
 title('Eye diagram for HS channel output')
 
-eyediagram(out_PS_SRRC,(K-1)*fs,T,0)
+eyediagram(out_PS_SRRC(K*fs:end-K*fs),(K-1)*fs,T,0)
 title('Eye diagram for SRRC channel output')
 %% Q7: Noise
 
