@@ -1,6 +1,7 @@
 clear all, close all
 alpha = 2;    % roll-off factor
 b = round(rand(20,1));  %random bitStream
+b = [0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1];
 K = 2;  %truncation constant
 fs = 32;    %samples per bit duration
 T = 1;      %bit duratio 
@@ -53,7 +54,7 @@ eyediagram(HS_mod, fs-1, T, fs/2)
 title('Eye diagram for half sine modulated signal')
 
 %eye diagram for SRRC modulated signal
-eyediagram(SRRC_mod,(K-1)*fs, T, 0)
+eyediagram(SRRC_mod(2*(K-1)*fs:end-2*(K-1)*fs),(K-1)*fs, T, 0)
 title('Eye diagram for SRRC modulated signal')
 %% Q5 Channel impulse and frequency response
 ch_coeff = [1 1/2 3/4 -2/7];    % channel coefficients, first sample is the ideal channel, rest are echoes
@@ -89,11 +90,11 @@ title('Channel output for modulated signal with SRRC')
 eyediagram(out_PS_HS,fs-1,T,fs/2+1)
 title('Eye diagram for HS channel output')
 
-eyediagram(out_PS_SRRC(K*fs:end-K*fs),(K-1)*fs,T,0)
+eyediagram(out_PS_SRRC,(K-1)*fs,T,0)
 title('Eye diagram for SRRC channel output')
 %% Q7: Noise
 
-noisePower = 0.1;   % noise power is sigma^2
+noisePower = 0.01;   % noise power is sigma^2
 % Half Sine: Channel output added with noise
 out_PS_HS_withNoise = addNoise(out_PS_HS, noisePower);    %add random noise to signal
 figure
@@ -107,9 +108,9 @@ plot(t_out2, out_PS_SRRC_withNoise)
 title('SRRC Channel Output with Noise')
 
 %plot eye diagrams
-eyediagram(out_PS_HS_withNoise,fs,T,fs/2)
+eyediagram(out_PS_HS_withNoise,fs-1,T,fs/2+1)
 title('Eye diagram for HS channel output with noise')
-eyediagram(out_PS_SRRC_withNoise,fs,T,0)
+eyediagram(out_PS_SRRC_withNoise(2*(K-1)*fs:end-2*(K-1)*fs),(K-1)*fs,T,0)
 title('Eye diagram for SRRC channel output with noise')
 
 
