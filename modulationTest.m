@@ -1,5 +1,5 @@
 clear all, close all
-alpha = 2;    % roll-off factor
+alpha = 0.5;    % roll-off factor
 b = round(rand(20,1));  %random bitStream
 % b = [0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1];
 K = 2;  %truncation constant
