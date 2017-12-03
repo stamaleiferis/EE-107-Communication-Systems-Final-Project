@@ -7,7 +7,7 @@ function [g2, t2] = SRRC(alpha, T, K, fs)
 		if t(i)==0
 			x(i) = 1 - alpha + 4*alpha/pi;
 
-		elseif t(i) == abs(T/(4*alpha))
+		elseif abs(t(i)) == T/(4*alpha)
 			x(i) = (alpha/sqrt(2)) * ((1+2/pi)*sin(pi/(4*alpha)) + (1-2/pi)*cos(pi/(4*alpha)));
 
 		else
