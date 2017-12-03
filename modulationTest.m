@@ -144,5 +144,5 @@ eyediagram(HS_MF_out,fs-1,T,1)
 title('Eye diagram for HS matched filter output')
 
 SRRC_MF_out = conv(out_PS_SRRC,SRRC_MF); 
-eyediagram(SRRC_MF_out((2*K-1)*fs*T:end-T*(2*K-1)*fs),fs-1,T,0)
+eyediagram(SRRC_MF_out((2*K-1)*fs*T:end-T*(2*K-1)*fs),fs)
 title('Eye diagram for SRRC matched filter output')
