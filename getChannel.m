@@ -1,4 +1,4 @@
-function [out] = channel(ch_coeff,fs,signal)
+function [out] = getChannel(ch_coeff,fs,signal)
 
 zero = zeros(1, fs-1);
 numTaps = length(ch_coeff);

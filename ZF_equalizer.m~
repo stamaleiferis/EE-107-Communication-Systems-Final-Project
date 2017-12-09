@@ -1,0 +1,16 @@
+function [out, out2] = ZF_equalizer(ch_coeff, fs,signal)
+
+    channel = getChannel(ch_coeff,fs);
+    
+    if nargin == 2   % return equalizer frequency response
+        [H = freqz(channel,1,1024,fs);
+        ZF = 1./H;   % zero forcing equalizer frequency response
+        out = ifft(ZF);   % return equalizer frequency response
+    elseif nargin == 3   
+        [H, w] = freqz(channel,1,length(signal));    %get channel frequency response
+        ZF = 1./H;   % zero forcing equalizer frequency response
+        out = ifft(ZF.*fft(signal));    % return time domain signal at the output of the equalizer
+        %out = out(1:320);
+    end
+  
+end

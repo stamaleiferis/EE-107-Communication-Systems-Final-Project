@@ -172,9 +172,4 @@ subplot(2,1,2)
 plot(ZF_SRRC)   %plot SRRC
 title('SRRC modulated signal after channel and zero-forcing equalizer')
 
-% plot eye diagrams at the output of equalizer
-eyediagram(ZF_HS,fs,T,fs/2)     % for half sine
-eyediagram(ZF_SRRC,fs,T,0)      % for SRRC
-
-
 
