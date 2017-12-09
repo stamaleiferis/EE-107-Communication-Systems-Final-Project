@@ -1,4 +1,4 @@
-function [out] = ZF_equalizer(ch_coeff, fs,signal)
+function [signal_out] = ZF_equalizer(ch_coeff, fs,signal)
 
     channel = getChannel(ch_coeff,fs);
     
@@ -11,6 +11,7 @@ function [out] = ZF_equalizer(ch_coeff, fs,signal)
         title('Zero-forcing equalizer frequency response')
         subplot(2,1,2)
         plot(f,angle(ZF))
+        title('Zero-forcing equalizer phase')
         figure
         plot(ifft(ZF))
         title('Zero-forcing equalizer impulse response')
@@ -18,8 +19,8 @@ function [out] = ZF_equalizer(ch_coeff, fs,signal)
     elseif nargin == 3   
         H = fft(channel,length(signal));    %get channel frequency response
         ZF = 1./H;   % zero forcing equalizer frequency response
-        out = ifft(ZF.*fft(signal));    % return time domain signal at the output of the equalizer
-        out = out(1:320);
+        signal_out = ifft(ZF.*fft(signal),length(signal));    % return time domain signal at the output of the equalizer
+        signal_out = signal_out(1:end-3*fs); % need to truncate the zeros in the end so that the eye diagram is good
     end
   
 end

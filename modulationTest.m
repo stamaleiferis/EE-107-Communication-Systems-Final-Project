@@ -148,7 +148,7 @@ eyediagram(HS_MF_out,fs,T,0)
 title('Eye diagram for HS matched filter output')
 
 SRRC_MF_out = conv(out_PS_SRRC,SRRC_MF); 
-%eyediagram(SRRC_MF_out((2*K-1)*fs*T:end-T*(2*K-1)*fs),fs)
+%eyediagram(SRRC_MF_out((2*K-1)*fs*T:end-T*(2*K-1)*fs),fs,T,0)
 eyediagram(SRRC_MF_out,fs, T, 0)
 title('Eye diagram for SRRC matched filter output')
 
@@ -171,10 +171,33 @@ title('Half sine modulated signal after channel and zero-forcing equalizer')
 subplot(2,1,2)
 plot(ZF_SRRC)   %plot SRRC
 title('SRRC modulated signal after channel and zero-forcing equalizer')
+% Modulated signals after channel with noise, pass through equalizer
+ZF_HS_noise = ZF_equalizer(ch_coeff, fs, out_PS_HS_withNoise);  % half sine
+ZF_SRRC_noise = ZF_equalizer(ch_coeff, fs, out_PS_SRRC_withNoise);  % SRRC
+figure
+subplot(2,1,1)  %plot half sine
+plot(ZF_HS_noise)
+title('Half sine modulated signal after channel w/ noise and zero-forcing equalizer')
+subplot(2,1,2)
+plot(ZF_SRRC_noise)   %plot SRRC
+title('SRRC modulated signal after channel w/ noise and zero-forcing equalizer')
 
 % plot eye diagrams at the output of equalizer
 eyediagram(ZF_HS,fs,T,fs/2)     % for half sine
+title('Eye diagram of the zero-forcing equalizer output for Half Sine ')
 eyediagram(ZF_SRRC,fs,T,0)      % for SRRC
+title('Eye diagram of the zero-forcing equalizer output for SRRC ')
+% plot eye diagrams for signals with noise at the output of the equalizer
+eyediagram(ZF_HS_noise,fs,T,fs/2)     % for half sine
+title('Eye diagram of the zero-forcing equalizer output for Half Sine ')
+eyediagram(ZF_SRRC_noise,fs,T,0)      % for SRRC
+%% Q12 & Q13 MMSE Equalizer
+MMSE_equalizer(ch_coeff, fs,noisePower);    % plot MMSE frequency and impulse responses
+MMSE_HS = MMSE_equalizer(ch_coeff, fs,noisePower,out_PS_HS_withNoise);  % pass HS signal with noise through the equalizer
+MMSE_SRRC = MMSE_equalizer(ch_coeff, fs,noisePower,out_PS_SRRC_withNoise);  % pass the SRRC signal with noise through the equalizer
 
-
-
+%plot eye diagrams at the output of the equalizer
+eyediagram(MMSE_HS,fs,T,fs/2)     % for half sine
+title('Eye diagram of the MMSE equalizer output for Half Sine ')
+eyediagram(MMSE_SRRC((2*K-1)*fs*T:end-T*(2*K-1)*fs),fs,T,0)        % for SRRC
+title('Eye diagram of the MMSE equalizer output for SRRC ')

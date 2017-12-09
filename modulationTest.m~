@@ -1,6 +1,6 @@
 clear all, close all
 alpha = 0.5;    % roll-off factor
-b = round(rand(100,1));  %random bitStream
+b = round(rand(10,1));  %random bitStream
 % b = [0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1];
 K = 4;  %truncation constant
 fs = 32;    %samples per bit duration
@@ -171,5 +171,18 @@ title('Half sine modulated signal after channel and zero-forcing equalizer')
 subplot(2,1,2)
 plot(ZF_SRRC)   %plot SRRC
 title('SRRC modulated signal after channel and zero-forcing equalizer')
+% Modulated signals after channel with noise, pass through equalizer
 
+
+% plot eye diagrams at the output of equalizer
+eyediagram(ZF_HS,fs,T,fs/2)     % for half sine
+title('Eye diagram of the zero-forcing equalizer at ')
+eyediagram(ZF_SRRC,fs,T,0)      % for SRRC
+
+% plot eye diagrams for signals with noise at the output of the equalizer
+
+%% Q12 & Q13 MMSE Equalizer
+MMSE_equalizer(ch_coeff, fs,noisePower);
+MMSE_HS = MMSE_equalizer(ch_coeff, fs,noisePower,out_PS_HS_withNoise);
+MMSE_SRRC = MMSE_equalizer(ch_coeff, fs,noisePower,out_PS_SRRC_withNoise);
 
