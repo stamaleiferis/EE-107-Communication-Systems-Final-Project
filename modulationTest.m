@@ -143,11 +143,14 @@ freqz(SRRC_MF)
 title('SRRC Matched Filter Frequency Response')
 
 %convolve modulated signals with their respective matched filter
-HS_MF_out = conv(out_PS_HS,HS_MF); 
-eyediagram(HS_MF_out,fs,T,0)
+HS_MF_out = conv(out_PS_HS,HS_MF,'same');  % use signal at channel output instead of just modulated signal
+%
+%HS_MF_out = ifft(fft(out_PS_HS).*fft(HS_MF,length(out_PS_HS)));
+%HS_MF_out = HS_MF_out(fs*T:end-fs*T);
+eyediagram(HS_MF_out,fs,T,fs/2)
 title('Eye diagram for HS matched filter output')
 
-SRRC_MF_out = conv(out_PS_SRRC,SRRC_MF); 
+SRRC_MF_out = conv(out_PS_SRRC,SRRC_MF,'valid'); 
 %eyediagram(SRRC_MF_out((2*K-1)*fs*T:end-T*(2*K-1)*fs),fs,T,0)
 eyediagram(SRRC_MF_out,fs, T, 0)
 title('Eye diagram for SRRC matched filter output')
@@ -155,15 +158,18 @@ title('Eye diagram for SRRC matched filter output')
 %% Q10 & Q11 Zero-Forcing Equalizer
 % out_PS_HS is channel output for half sine modulated signal
 % out_PS_HS_withNoise
+% HS_MF_out  is after channel and matched filter
+
 % out_PS_SRRC is channel output for
 % out_PS_SRRC_withNoise
+% SRRC_MF_out is after channel and matched filter
 
 % plot zero-forcing equalizer responses
 ZF_equalizer(ch_coeff, fs); % plot frequency and impulse response
 
-% Modulated signals after channel, pass through equalizer
-ZF_HS = ZF_equalizer(ch_coeff, fs, out_PS_HS);  % half sine
-ZF_SRRC = ZF_equalizer(ch_coeff, fs, out_PS_SRRC);  % SRRC
+% Modulated signals after channel and matched filter, pass through equalizer
+ZF_HS = ZF_equalizer(ch_coeff, fs, HS_MF_out);  % half sine
+ZF_SRRC = ZF_equalizer(ch_coeff, fs, SRRC_MF_out);  % SRRC
 figure
 subplot(2,1,1)  %plot half sine
 plot(ZF_HS)
@@ -183,14 +189,15 @@ plot(ZF_SRRC_noise)   %plot SRRC
 title('SRRC modulated signal after channel w/ noise and zero-forcing equalizer')
 
 % plot eye diagrams at the output of equalizer
-eyediagram(ZF_HS,fs,T,fs/2)     % for half sine
-title('Eye diagram of the zero-forcing equalizer output for Half Sine ')
+eyediagram(ZF_HS,fs,T,0)     % for half sine
+title('Eye diagram of the zero-forcing equalizer output for Half Sine modulated signal ')
 eyediagram(ZF_SRRC,fs,T,0)      % for SRRC
-title('Eye diagram of the zero-forcing equalizer output for SRRC ')
+title('Eye diagram of the zero-forcing equalizer output for SRRC modulated signal ')
 % plot eye diagrams for signals with noise at the output of the equalizer
 eyediagram(ZF_HS_noise,fs,T,fs/2)     % for half sine
-title('Eye diagram of the zero-forcing equalizer output for Half Sine ')
+title('Eye diagram of the zero-forcing equalizer output for Half Sine modulated signal w/ noise')
 eyediagram(ZF_SRRC_noise,fs,T,0)      % for SRRC
+title('Eye diagram of the zero-forcing equalizer output for SRRC modulated signal w/ noise ')
 %% Q12 & Q13 MMSE Equalizer
 MMSE_equalizer(ch_coeff, fs,noisePower);    % plot MMSE frequency and impulse responses
 MMSE_HS = MMSE_equalizer(ch_coeff, fs,noisePower,out_PS_HS_withNoise);  % pass HS signal with noise through the equalizer

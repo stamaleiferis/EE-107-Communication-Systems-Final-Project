@@ -9,5 +9,4 @@ function bits = sampleAndDetect(signal,T,fs)
     bits(bits>0) = 1;
     bits(bits<0) = -1;
 
-
 end

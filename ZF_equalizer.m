@@ -20,7 +20,7 @@ function [signal_out] = ZF_equalizer(ch_coeff, fs,signal)
         H = fft(channel,length(signal));    %get channel frequency response
         ZF = 1./H;   % zero forcing equalizer frequency response
         signal_out = ifft(ZF.*fft(signal),length(signal));    % return time domain signal at the output of the equalizer
-        signal_out = signal_out(1:end-3*fs); % need to truncate the zeros in the end so that the eye diagram is good
+        %signal_out = signal_out(1:end-3*fs); % need to truncate the zeros in the end so that the eye diagram is good
     end
   
 end
