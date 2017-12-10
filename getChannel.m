@@ -8,14 +8,14 @@ for i = 1:numTaps-1
     channel = [channel ch_coeff(i) zero];
 end
 
-channel = [channel ch_coeff(end) zero];
+channel = [channel ch_coeff(end)];
 
 if nargin == 2 && nargout == 1  % return channel with zero padding
     out = channel;
     return;
     
 elseif nargin == 3 && nargout == 1
-    out = conv(signal, channel,'same'); % return signal with channel effect; 
+    out = conv(signal, channel); % return signal with channel effect; 
     return; 
     
 end

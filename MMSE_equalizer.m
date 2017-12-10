@@ -20,7 +20,7 @@ function out = MMSE_equalizer(ch_coeff, fs,noise_power,signal)
         H = fft(channel, length(signal));
         Q = conj(H)./ (abs(H).^2 + 2*noise_power);
         out = ifft(Q .* fft(signal));
-        out = out(1:end-3*fs);
+        out = out(1:end-fs/2+1);
     end
 
 end
