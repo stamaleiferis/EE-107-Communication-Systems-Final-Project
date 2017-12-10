@@ -2,7 +2,7 @@ function bits = sampleAndDetect(signal,T,fs)
     
     samples = [];
     bits = [];
-    for i = 1:fs*T:length(signal)-fs*T
+    for i = fs*T/2:fs*T:length(signal)-fs*T
        samples(i) = signal((i+fs*T)/2);
     end
     bits = samples;

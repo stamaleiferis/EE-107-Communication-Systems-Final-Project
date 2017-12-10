@@ -17,10 +17,12 @@ function [signal_out] = ZF_equalizer(ch_coeff, fs,signal)
         title('Zero-forcing equalizer impulse response')
         
     elseif nargin == 3   
-        H = fft(channel,length(signal));    %get channel frequency response
+        %H = fft(channel,length(signal));    %get channel frequency response
+        [H,f] = freqz(channel,1,length(signal),fs);
         ZF = 1./H;   % zero forcing equalizer frequency response
         signal_out = ifft(ZF.*fft(signal),length(signal));    % return time domain signal at the output of the equalizer
-        %signal_out = signal_out(1:end-3*fs); % need to truncate the zeros in the end so that the eye diagram is good
+        %signal_out = conv(signal,ifft(ZF,length(signal)));
+        %signal_out = signal_out(1:length(signal)); % need to truncate the zeros in the end so that the eye diagram is good
     end
   
 end
