@@ -189,7 +189,7 @@ plot(ZF_SRRC_noise)   %plot SRRC
 title('SRRC modulated signal after channel w/ noise and zero-forcing equalizer')
 
 % plot eye diagrams at the output of equalizer
-eyediagram(ZF_HS(length(ZF_HS)/4:length(ZF_HS)/2),fs,T,1)     % for half sine
+eyediagram(ZF_HS(length(ZF_HS)/4:length(ZF_HS)/2),fs,T,fs/2)     % for half sine
 title('Eye diagram of the zero-forcing equalizer output for Half Sine modulated signal ')
 eyediagram(ZF_SRRC,fs,T,0)      % for SRRC
 title('Eye diagram of the zero-forcing equalizer output for SRRC modulated signal ')

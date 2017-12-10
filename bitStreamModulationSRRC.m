@@ -13,7 +13,7 @@ function [y, t] = bitStreamModulationSRRC(b,T,fs,K,alpha)
 	y = conv(dataToConvolve,pulse);
 
     if nargout == 2
-        t = linspace(-K*T,length(b)*T + K*T,length(y));
+        t = linspace(-K*T,length(b)*T + K*T-T/fs,length(y));
     end
 
 end
