@@ -1,17 +1,17 @@
 % run the system 
 clear all, close all
-alpha = 0.5;    % roll-off factor
-K = 5;  %truncation constant
+alpha = 0;    % roll-off factor
+K = 6;  %truncation constant
 fs = 32;    %samples per bit duration
 T = 1;      %bit duration 
 ch_coeff = [1 1/2 3/4 -2/7]; %channel taps
-noisePower = .03;   % AWGN noise power is sigma^2
+noisePower = 0;   % AWGN noise power is sigma^2
 %% Image pre-processing
 % filename = 'image_example.png';
 % qbits = 8;
 % [Ztres,r,c,m,n,minval,maxval]=ImagePreProcess_gray(filename,qbits); % returns array of 8x8 blocks
 %% Convert to bit stream
-b = round(rand(1000,1));  %random bitStream
+b = round(rand(10,1));  %random bitStream
 numBits = length(b);
 %% Modulate bitstream
 [HS_mod, t1] = bitStreamModulationHS(b,T,fs); % Modulate signal with Half Sine pulses
@@ -36,10 +36,10 @@ ZF_SRRC = ZF_equalizer(ch_coeff, fs, SRRC_MF_out);  % SRRC
 % or MMSE
 MMSE_HS = MMSE_equalizer(ch_coeff, fs,noisePower,HS_MF_out);  % half sine
 MMSE_SRRC = MMSE_equalizer(ch_coeff, fs,noisePower,SRRC_MF_out);  % SRRC
-%MMSE_SRRC(2*(K-1)*fs:end); % remove leading zeros
+MMSE_SRRC(2*(K-1)*fs:end); % remove leading zeros
 %% Sample and recover bitstream
-bits_MMSE_HS = sampleAndDetect(MMSE_HS,T,fs,1,numBits,K);
-bits_MMSE_SRRC = sampleAndDetect(MMSE_SRRC,T,fs,0,numBits,K);
+bits_MMSE_HS = sampleAndDetect(MMSE_HS,T,fs,1,numBits);
+bits_MMSE_SRRC = sampleAndDetect(MMSE_SRRC,T,fs,0,numBits);
 %% Convert back to image
 
 %% Image post processing
