@@ -64,11 +64,11 @@ t_ch = linspace(0,length(ch_coeff)*T,length(channel));  % time vector to plot th
 figure
 stem(t_ch,channel) 
 title('Channel Impulse Response')
-xlabel('Time')
+xlabel('Samples')
 ylabel('Channel')
 figure
+[H, w] = freqz(channel,1,1024);
 freqz(channel,1,1024);
-[H, w] = freqz(channel,1,1024); 
 title('Channel Frequency Response')
 
 %% Channel output for 2 different modualted signals
@@ -111,9 +111,14 @@ title('SRRC Channel Output with Noise')
 
 %plot eye diagrams
 eyediagram(out_PS_HS_withNoise,fs,T,fs/2)
-title('Eye diagram for HS channel output with noise')
+tt = sprintf('Noise power ?^{2}=%f',noisePower);
+tt = strcat('Eye diagram for HS channel output with noise',tt);
+title(tt)
 %eyediagram(out_PS_SRRC_withNoise((K-0.5)*T*fs:end-(K-0.5)*T*fs), fs, T, fs/2+2)
 eyediagram(out_PS_SRRC_withNoise((2*K-1)*T*fs:end-(2*K-1)*T*fs), fs, T, 0)
+tt = sprintf('Noise power ?^{2}=%f',noisePower);
+tt = strcat('Eye diagram for SRRC channel output with noise',tt);
+title(tt)
 %eyediagram(out_PS_SRRC_withNoise,fs, T, 0)
 title('Eye diagram for SRRC channel output with noise')
 
@@ -189,7 +194,7 @@ title('SRRC modulated signal after channel, matched filter, and zero-forcing equ
 % title('SRRC modulated signal after channel w/ noise and zero-forcing equalizer')
 
 % plot eye diagrams at the output of equalizer
-eyediagram(ZF_HS(length(ZF_HS)/4:length(ZF_HS)/2),fs,T,fs/2)     % for half sine
+eyediagram(ZF_HS(length(ZF_HS)/4:length(ZF_HS)/2),fs,T,0)     % for half sine
 title('Eye diagram of the zero-forcing equalizer output for Half Sine modulated signal ')
 eyediagram(ZF_SRRC,fs,T,0)      % for SRRC
 title('Eye diagram of the zero-forcing equalizer output for SRRC modulated signal ')

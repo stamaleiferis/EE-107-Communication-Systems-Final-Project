@@ -8,16 +8,15 @@ function out = MMSE_equalizer(ch_coeff, fs,noise_power,signal)
         figure
         subplot(2,1,1)
         plot(f,mag2db(abs(Q)))
-        tttl = sprintf('sigma^{2} = %f',noise_power);
-        ttl = strcat('MMSE magnitude response   ',tttl);
-        title(ttl)
+        tttl = 'sigma^{2} = %f';
+        ttl = strcat('MMSE magnitude response ',)
+        title()
         subplot(2,1,2)
         plot(f,angle(Q))
         title('MMSE phase')
         figure
         plot(ifft(Q))
-        ttl=strcat('MMSE impulse response   ',tttl);
-        title(ttl)
+        title('MMSE impulse response')
         
     elseif nargin == 4
         H = fft(channel, length(signal));

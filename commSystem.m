@@ -5,11 +5,12 @@ K = 5;  %truncation constant
 fs = 32;    %samples per bit duration
 T = 1;      %bit duration 
 ch_coeff = [1 1/2 3/4 -2/7]; %channel taps
-noisePower = .03;   % AWGN noise power is sigma^2
+noisePower = 0.1;   % AWGN noise power is sigma^2
 %% Image pre-processing
-filename = 'image_example.png';
+filename = 'photo.jpeg';
 qbits = 8;
 [Ztres,r,c,m,n,minval,maxval]=ImagePreProcess_gray(filename,qbits); % returns array of 8x8 blocks
+% [Ztresr,Ztresg,Ztresb,r,c,m,n,minval,maxval]
 %% Convert to bit stream
 sZ = size(Ztres);
 possibleGroupNums = factor(sZ(3)); % in ascending order
