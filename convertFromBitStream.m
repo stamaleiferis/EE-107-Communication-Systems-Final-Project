@@ -9,7 +9,8 @@ function data = convertFromBitStream(bitStream, N)
     
     for i=1:length(bitStream)
         data{i} = bi2de(bitStream{i});
-        data{i} = reshape(data{i}, [m n N]); %convert back to 3D array, N different arrays of 8x8 blocks
+        
     end
     
+    data{:} = reshape(data{:}, [m n N]); %convert back to 3D array, N different arrays of 8x8 blocks
 end

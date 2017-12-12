@@ -7,39 +7,57 @@ T = 1;      %bit duration
 ch_coeff = [1 1/2 3/4 -2/7]; %channel taps
 noisePower = .03;   % AWGN noise power is sigma^2
 %% Image pre-processing
-% filename = 'image_example.png';
-% qbits = 8;
-% [Ztres,r,c,m,n,minval,maxval]=ImagePreProcess_gray(filename,qbits); % returns array of 8x8 blocks
+filename = 'image_example.png';
+qbits = 8;
+[Ztres,r,c,m,n,minval,maxval]=ImagePreProcess_gray(filename,qbits); % returns array of 8x8 blocks
 %% Convert to bit stream
-b = round(rand(1000,1));  %random bitStream
-numBits = length(b);
-%% Modulate bitstream
-[HS_mod, t1] = bitStreamModulationHS(b,T,fs); % Modulate signal with Half Sine pulses
-[SRRC_mod,t2] = bitStreamModulationSRRC(b,T,fs,K,alpha); % SRRC modulated signal
-%% Pass modulated bitstream through channel
-out_PS_HS = getChannel(ch_coeff,fs, HS_mod);
-out_PS_SRRC = getChannel(ch_coeff,fs, SRRC_mod);
-%% Add noise
-out_PS_HS = addNoise(out_PS_HS, noisePower);
-out_PS_SRRC = addNoise(out_PS_SRRC, noisePower);
-%% Pass signal through matched filter
-HS_MF = HalfSineMatchedFilter(T, fs); %this is the matched filter
-HS_MF_out = conv(out_PS_HS,HS_MF);
+possibleGroupNums = factor(size(Ztres,3)); % in ascending order
+N = possibleGroupNums(end);
+stream = convertToBitStream(Ztres, N);
+recoverStreamHS = cell(size(stream)); %initalize arrays to hold recovered bits
+recoverStreamSRRC = cell(size(stream));
+%b = round(rand(1000,1));  %random bitStream
+%
+for i=1:length(stream)
+    toSend = stream{i}; %get group of NxN blocks
+    toSend = reshape(toSend, [1, size(toSend,1)*size(toSend,2)]);
+    b = toSend;
+    numBits = length(b);
+    %% Modulate bitstream
+    [HS_mod, t1] = bitStreamModulationHS(b,T,fs); % Modulate signal with Half Sine pulses
+    [SRRC_mod,t2] = bitStreamModulationSRRC(b,T,fs,K,alpha); % SRRC modulated signal
+    %% Pass modulated bitstream through channel
+    out_PS_HS = getChannel(ch_coeff,fs, HS_mod);
+    out_PS_SRRC = getChannel(ch_coeff,fs, SRRC_mod);
+    %% Add noise
+    out_PS_HS = addNoise(out_PS_HS, noisePower);
+    out_PS_SRRC = addNoise(out_PS_SRRC, noisePower);
+    %% Pass signal through matched filter
+    HS_MF = HalfSineMatchedFilter(T, fs); %this is the matched filter
+    HS_MF_out = conv(out_PS_HS,HS_MF);
 
-SRRC_MF = SRRCMatchedFilter(alpha, T, K, fs); %this is the matched filter
-SRRC_MF_out = conv(out_PS_SRRC,SRRC_MF);
+    SRRC_MF = SRRCMatchedFilter(alpha, T, K, fs); %this is the matched filter
+    SRRC_MF_out = conv(out_PS_SRRC,SRRC_MF);
 
-%% Pass signal through equalizer
-% Zero-forcing
-ZF_HS = ZF_equalizer(ch_coeff, fs, HS_MF_out);  % half sine
-ZF_SRRC = ZF_equalizer(ch_coeff, fs, SRRC_MF_out);  % SRRC
-% or MMSE
-MMSE_HS = MMSE_equalizer(ch_coeff, fs,noisePower,HS_MF_out);  % half sine
-MMSE_SRRC = MMSE_equalizer(ch_coeff, fs,noisePower,SRRC_MF_out);  % SRRC
-%MMSE_SRRC(2*(K-1)*fs:end); % remove leading zeros
-%% Sample and recover bitstream
-bits_MMSE_HS = sampleAndDetect(MMSE_HS,T,fs,1,numBits,K);
-bits_MMSE_SRRC = sampleAndDetect(MMSE_SRRC,T,fs,0,numBits,K);
+    %% Pass signal through equalizer
+    % Zero-forcing
+    ZF_HS = ZF_equalizer(ch_coeff, fs, HS_MF_out);  % half sine
+    ZF_SRRC = ZF_equalizer(ch_coeff, fs, SRRC_MF_out);  % SRRC
+    % or MMSE
+    MMSE_HS = MMSE_equalizer(ch_coeff, fs,noisePower,HS_MF_out);  % half sine
+    MMSE_SRRC = MMSE_equalizer(ch_coeff, fs,noisePower,SRRC_MF_out);  % SRRC
+    %MMSE_SRRC(2*(K-1)*fs:end); % remove leading zeros
+    %% Sample 
+    bits_MMSE_HS = sampleAndDetect(MMSE_HS,T,fs,1,numBits,K);
+    bits_MMSE_SRRC = sampleAndDetect(MMSE_SRRC,T,fs,0,numBits,K);
+    %% Recover bitstream
+    bits_MMSE_HS = reshape(bits_MMSE_HS,[size(toSend,1) size(toSend,2)]);
+    recoverStreamHS{i} = bits_MMSE_HS;
+    
+    bits_MMSE_SRRC = reshape(bits_MMSE_SRRC,[size(toSend,1) size(toSend,2)]);
+    recoverStreamSRRC{i} = bits_MMSE_SRRC;
+end
 %% Convert back to image
-
+ZtresHS_MMSE = convertFromBitStream(recoverStreamHS, N);    %image from MMSE EQ Half sine
 %% Image post processing
+ImagePostProcess_gray(ZtresHS_MMSE,r,c,m,n,minval,maxval)
