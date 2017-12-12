@@ -7,7 +7,7 @@ T = 1;      %bit duration
 ch_coeff = [1 1/2 3/4 -2/7]; %channel taps
 noisePower = 0.1;   % AWGN noise power is sigma^2
 %% Image pre-processing
-filename = 'photo.jpeg';
+filename = 'onion.png';
 qbits = 8;
 [Ztres,r,c,m,n,minval,maxval]=ImagePreProcess_gray(filename,qbits); % returns array of 8x8 blocks
 % [Ztresr,Ztresg,Ztresb,r,c,m,n,minval,maxval]
