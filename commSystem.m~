@@ -5,7 +5,7 @@ K = 5;  %truncation constant
 fs = 32;    %samples per bit duration
 T = 1;      %bit duration 
 ch_coeff = [1 1/2 3/4 -2/7]; %channel taps
-noisePower = .03;   % AWGN noise power is sigma^2
+noisePower = 1;   % AWGN noise power is sigma^2
 %% Image pre-processing
 filename = 'photo.jpeg';
 qbits = 8;
@@ -49,9 +49,13 @@ for i=1:numChunks
     MMSE_SRRC = MMSE_equalizer(ch_coeff, fs,noisePower,SRRC_MF_out);  % SRRC
     %MMSE_SRRC(2*(K-1)*fs:end); % remove leading zeros
     %% Sample 
+    bits_ZF_HS = sampleAndDetect(ZF_HS,T,fs,1,numBits,K);
+    bits_ZF_SRRC = sampleAndDetect(ZF_SRRC,T,fs,0,numBits,K);
     bits_MMSE_HS = sampleAndDetect(MMSE_HS,T,fs,1,numBits,K);
     bits_MMSE_SRRC = sampleAndDetect(MMSE_SRRC,T,fs,0,numBits,K);
     %% Recover bitstream
+    recoverStreamHS_ZF((i-1)*chunkLength+1:i*chunkLength) = bits_ZF_HS;
+    recoverStreamSRRC((i-1)*chunkLength+1:i*chunkLength) = bits_ZF_SRRC;
     recoverStreamHS((i-1)*chunkLength+1:i*chunkLength) = bits_MMSE_HS;
     recoverStreamSRRC((i-1)*chunkLength+1:i*chunkLength) = bits_MMSE_SRRC;
 end
