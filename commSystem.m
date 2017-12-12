@@ -5,7 +5,7 @@ K = 5;  %truncation constant
 fs = 32;    %samples per bit duration
 T = 1;      %bit duration 
 ch_coeff = [1 1/2 3/4 -2/7]; %channel taps
-noisePower = 0;   % AWGN noise power is sigma^2
+noisePower = 0.1;   % AWGN noise power is sigma^2
 %% Image pre-processing
 filename = 'photo.jpeg';
 qbits = 8;

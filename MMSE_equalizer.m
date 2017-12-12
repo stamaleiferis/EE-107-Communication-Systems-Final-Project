@@ -3,7 +3,7 @@ function out = MMSE_equalizer(ch_coeff, fs,noise_power,signal)
     channel = getChannel(ch_coeff,fs);
       
     if nargin == 3 % plot frequency response 
-       [H,f] = freqz(channel,1,1024,fs);
+       [H,f] = freqz(ch_coeff,1,1024,fs);
         Q = conj(H)./ (abs(H).^2 + 2*noise_power);
         figure
         subplot(2,1,1)
@@ -15,7 +15,7 @@ function out = MMSE_equalizer(ch_coeff, fs,noise_power,signal)
         plot(f,angle(Q))
         title('MMSE phase')
         figure
-        plot(ifft(Q))
+        plot(real(ifft(Q)))
         ttl=strcat('MMSE impulse response   ',tttl);
         title(ttl)
         
