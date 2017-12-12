@@ -1,6 +1,6 @@
 clear all, close all
 alpha = 0.5;    % roll-off factor
-b = round(rand(100,1));  %random bitStream
+b = round(rand(1000,1));  %random bitStream
 % b = [0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1];
 K = 4;  %truncation constant
 fs = 32;    %samples per bit duration
@@ -208,3 +208,6 @@ eyediagram(MMSE_HS(length(MMSE_HS)/4:length(MMSE_HS)/2),fs,T,5)     % for half s
 title('Eye diagram of the MMSE equalizer output for Half Sine ')
 eyediagram(MMSE_SRRC(length(MMSE_SRRC)/4:length(MMSE_SRRC)/2),fs,T,21)        % for SRRC
 title('Eye diagram of the MMSE equalizer output for SRRC ')
+
+%% Sample
+y = sampleAndDetect(MMSE_HS,T,fs,1,length(b),K);

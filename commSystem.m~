@@ -5,23 +5,24 @@ K = 5;  %truncation constant
 fs = 32;    %samples per bit duration
 T = 1;      %bit duration 
 ch_coeff = [1 1/2 3/4 -2/7]; %channel taps
-noisePower = .03;   % AWGN noise power is sigma^2
+noisePower = .0;   % AWGN noise power is sigma^2
 %% Image pre-processing
 filename = 'image_example.png';
 qbits = 8;
 [Ztres,r,c,m,n,minval,maxval]=ImagePreProcess_gray(filename,qbits); % returns array of 8x8 blocks
 %% Convert to bit stream
-possibleGroupNums = factor(size(Ztres,3)); % in ascending order
+sZ = size(Ztres);
+possibleGroupNums = factor(sZ(3)); % in ascending order
 N = possibleGroupNums(end);
-stream = convertToBitStream(Ztres, N);
-recoverStreamHS = cell(size(stream)); %initalize arrays to hold recovered bits
-recoverStreamSRRC = cell(size(stream));
-%b = round(rand(1000,1));  %random bitStream
-%numBits = length(b);
-for i=1:length(stream)
-    toSend = stream{i}; %get group of NxN blocks
-    toSend = reshape(toSend, [1, size(toSend,1)*size(toSend,2)]);
-    b = toSend;
+[stream,chunkLength] = convertToBitStream(Ztres,N);
+numChunks = length(stream)/chunkLength;
+recoverStreamHS = zeros(size(stream));
+recoverStreamSRRC = zeros(size(stream));
+numBits = chunkLength;
+%%
+for i=1:numChunks
+    % Take the desired amount of the stream
+    b = double(stream((i-1)*chunkLength+1:i*chunkLength));
     %% Modulate bitstream
     [HS_mod, t1] = bitStreamModulationHS(b,T,fs); % Modulate signal with Half Sine pulses
     [SRRC_mod,t2] = bitStreamModulationSRRC(b,T,fs,K,alpha); % SRRC modulated signal
@@ -50,10 +51,12 @@ for i=1:length(stream)
     bits_MMSE_HS = sampleAndDetect(MMSE_HS,T,fs,1,numBits,K);
     bits_MMSE_SRRC = sampleAndDetect(MMSE_SRRC,T,fs,0,numBits,K);
     %% Recover bitstream
-    bits_MMSE_HS = reshape(bits_MMSE_HS,[size(toSend,1) size(toSend,2)]);
-    recoverStreamHS{i} = bits_MMSE_HS;
-    bits_MMSE_SRRC = reshape(bits_MMSE_SRRC,[size(toSend,1) size(toSend,2)]);
-    
+    recoverStreamHS((i-1)*chunkLength+1:i*chunkLength) = bits_MMSE_HS;
+    recoverStreamSRRC((i-1)*chunkLength+1:i*chunkLength) = bits_MMSE_SRRC;
+end
 %% Convert back to image
-
+ZtresHS_MMSE = convertFromBitStream(recoverStreamHS, sZ(1), sZ(2), sZ(3), qbits);%image from MMSE EQ Half sine
+ZtresSRRC_MMSE = convertFromBitStream(recoverStreamSRRC, sZ(1), sZ(2), sZ(3), qbits);
 %% Image post processing
+ImagePostProcess_gray(ZtresHS_MMSE,r,c,m,n,minval,maxval)
+ImagePostProcess_gray(ZtresSRRC_MMSE,r,c,m,n,minval,maxval)

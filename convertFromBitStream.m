@@ -1,16 +1,9 @@
-function data = convertFromBitStream(bitStream, N)
-    %N is number of blocks that were grouped together
-    % assuming bitStream is cell array of length equal to the # of groups
-    % of blocks
+function data = convertFromBitStream(bitStream,m,n,numBlocks,bits)
+% Bitstream should be a column vector
+% Will return a 3D array of integers
     
-    m = 8; % number of rows of a block 
-    n = 8; % number of columns of a block 
-    data = cell([1 length(bitStream)]);
-    
-    for i=1:length(bitStream)
-        data{i} = bi2de(bitStream{i});
-        
-    end
-    
-    data{:} = reshape(data{:}, [m n N]); %convert back to 3D array, N different arrays of 8x8 blocks
+    bitStream = uint8(bitStream);
+    dataDumBi = reshape(bitStream, [bits m*n*numBlocks])'; % gets binary formatting
+    dataDum = bi2de(dataDumBi); % turns into vec of ints
+    data = reshape(dataDum,[m n numBlocks]); % turns to desired block shape
 end
